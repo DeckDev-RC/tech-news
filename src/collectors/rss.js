@@ -25,14 +25,14 @@ const RSS_SOURCES = [
     category: 'Frontend'
   },
   {
-    name: 'Reddit Programming',
-    url: 'https://www.reddit.com/r/programming/.rss',
-    category: 'Discussões'
+    name: 'Dev.to - JavaScript',
+    url: 'https://dev.to/feed/tag/javascript',
+    category: 'Frontend'
   },
   {
-    name: 'Reddit Machine Learning',
-    url: 'https://www.reddit.com/r/MachineLearning/.rss',
-    category: 'AI'
+    name: 'Dev.to - Node',
+    url: 'https://dev.to/feed/tag/node',
+    category: 'Backend'
   },
   {
     name: 'GitHub Blog',
@@ -40,9 +40,19 @@ const RSS_SOURCES = [
     category: 'Developer Tools'
   },
   {
-    name: 'Vercel Blog',
-    url: 'https://vercel.com/blog/feed',
-    category: 'Frontend'
+    name: 'Lobsters',
+    url: 'https://lobste.rs/rss',
+    category: 'Tech Geral'
+  },
+  {
+    name: 'The New Stack',
+    url: 'https://thenewstack.io/feed/',
+    category: 'DevOps'
+  },
+  {
+    name: 'InfoQ',
+    url: 'https://www.infoq.com/feed/',
+    category: 'Architecture'
   }
 ];
 
@@ -53,7 +63,7 @@ async function fetchFeed(source) {
   try {
     console.log(`📡 Coletando: ${source.name}...`);
     const feed = await parser.parseURL(source.url);
-    
+
     const articles = feed.items.map(item => ({
       title: item.title,
       url: item.link,
@@ -90,25 +100,25 @@ function filterLast24Hours(articles) {
  */
 export async function collectAllFeeds() {
   console.log('🚀 Iniciando coleta de feeds RSS...\n');
-  
+
   const startTime = Date.now();
-  
+
   // Busca todos os feeds em paralelo
   const results = await Promise.all(
     RSS_SOURCES.map(source => fetchFeed(source))
   );
-  
+
   // Junta todos os artigos
   const allArticles = results.flat();
-  
+
   // Filtra últimas 24h
   const recentArticles = filterLast24Hours(allArticles);
-  
+
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-  
+
   console.log(`\n✨ Coleta finalizada em ${elapsed}s`);
   console.log(`📊 Total: ${allArticles.length} artigos`);
   console.log(`🕒 Últimas 24h: ${recentArticles.length} artigos\n`);
-  
+
   return recentArticles;
 }
