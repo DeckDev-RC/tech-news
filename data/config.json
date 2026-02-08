@@ -1,0 +1,6 @@
+{
+  "cronSchedule": "0 7 * * *",
+  "timezone": "America/Sao_Paulo",
+  "sendEmailOnGenerate": false,
+  "lastUpdated": null
+}

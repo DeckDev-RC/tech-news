@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: newsletter-backend
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - TZ=America/Sao_Paulo
+      - CRON_SCHEDULE=0 7 * * *
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GMAIL_USER=${GMAIL_USER}
+      - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+      - RECIPIENT_NAME=${RECIPIENT_NAME}
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+    volumes:
+      - newsletter-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build: ./web
+    container_name: newsletter-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://backend:3002
+
+volumes:
+  newsletter-data:
