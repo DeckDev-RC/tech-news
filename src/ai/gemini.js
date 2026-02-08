@@ -5,6 +5,9 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
 
 const CURATOR_PROMPT = `Você é um curador expert de conteúdo tech/programação/IA para uma newsletter BRASILEIRA.
 
+REGRA MAIS IMPORTANTE: TODOS os títulos DEVEM ser traduzidos para PORTUGUÊS BRASILEIRO.
+NÃO retorne títulos em inglês. A newsletter é para brasileiros.
+
 Analise os artigos fornecidos e retorne um JSON com a seguinte estrutura:
 
 {
@@ -21,25 +24,30 @@ Analise os artigos fornecidos e retorne um JSON com a seguinte estrutura:
 
 Para cada artigo, retorne:
 {
-  "title": "título TRADUZIDO para português brasileiro",
-  "original_title": "título original em inglês (se aplicável)",
+  "title": "TÍTULO EM PORTUGUÊS BRASILEIRO (obrigatório traduzir)",
+  "original_title": "título original em inglês",
   "url": "url original",
   "source": "fonte original",
   "category": "categoria principal",
-  "relevance": 1-5,  // 5 = muito relevante, 1 = pouco relevante
-  "summary": "resumo em 2-3 linhas focado no valor/aprendizado",
+  "relevance": 1-5,
+  "summary": "resumo em português em 2-3 linhas focado no valor/aprendizado",
   "tags": ["tag1", "tag2", "tag3"],
   "reasoning": "por que isso é relevante (1 linha)"
 }
 
-TRADUÇÃO OBRIGATÓRIA:
-- TRADUZA todos os títulos para português brasileiro natural e fluente
-- Mantenha termos técnicos em inglês: API, React, Node.js, TypeScript, DevOps, etc
-- Use linguagem informal mas profissional, como um dev brasileiro falaria
-- Exemplos:
-  - "How to Build a REST API" → "Como Criar uma API REST"
-  - "React 19 is Here" → "React 19 Chegou!"
-  - "Why Senior Developers Use..." → "Por Que Devs Seniors Usam..."
+⚠️ TRADUÇÃO É OBRIGATÓRIA - NÃO IGNORE:
+- O campo "title" DEVE estar em português brasileiro
+- TRADUZA mesmo que o título original esteja em inglês
+- Mantenha termos técnicos: API, React, Node.js, TypeScript, DevOps, etc
+- Use linguagem natural de dev brasileiro
+
+EXEMPLOS DE TRADUÇÃO (SIGA ESTE PADRÃO):
+- "Speed up responses with fast mode" → "Acelere respostas com modo rápido"
+- "How to Build a REST API" → "Como Criar uma API REST"
+- "React 19 is Here" → "React 19 Chegou!"
+- "Why Senior Developers Use..." → "Por Que Devs Seniors Usam..."
+- "Linux-based sandboxing for AI agents" → "Sandboxing baseado em Linux para agentes de IA"
+- "A local-first AI assistant" → "Um assistente de IA local-first"
 
 CRITÉRIOS DE RELEVÂNCIA:
 - 5: Breaking news, major launches, game-changers
@@ -52,7 +60,8 @@ IMPORTANTE:
 - Priorize artigos sobre: Claude, IA generativa, React, Node.js, DevTools modernos
 - Destaque artigos do tipo "como seniors usam X" ou "padrões de uso"
 - Seja crítico: exclua clickbait e conteúdo superficial
-- Retorne APENAS o JSON válido, sem texto adicional`;
+- Retorne APENAS o JSON válido, sem texto adicional
+- LEMBRE-SE: TÍTULOS EM PORTUGUÊS!`;
 
 /**
  * Processa artigos com Gemini
