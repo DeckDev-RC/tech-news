@@ -2,14 +2,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copia package files
-COPY web/package*.json ./
+# Copia package files (contexto já é a pasta web/)
+COPY package*.json ./
 
 # Instala dependências
 RUN npm ci
 
 # Copia código fonte
-COPY web/ ./
+COPY . ./
 
 # Define variável de ambiente para build
 ARG VITE_API_URL=http://localhost:3002
@@ -33,14 +33,6 @@ RUN echo 'server { \
     index index.html; \
     location / { \
         try_files $uri $uri/ /index.html; \
-    } \
-    location /api { \
-        proxy_pass http://backend:3002; \
-        proxy_http_version 1.1; \
-        proxy_set_header Upgrade $http_upgrade; \
-        proxy_set_header Connection "upgrade"; \
-        proxy_set_header Host $host; \
-        proxy_cache_bypass $http_upgrade; \
     } \
 }' > /etc/nginx/conf.d/default.conf
 
